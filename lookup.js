@@ -1,9 +1,9 @@
-/* An AirTable automation script that updates the Manifest Table 
+/* An AirTable automation script that updates the Manifest Table
 with details provided in the CSV file table. It effectively acts as a lookup
-with some additional validation steps. 
+with some additional validation steps.
 */
 
-// Logging statements to provide useful feedback in airtable 
+// Logging statements to provide useful feedback in airtable
 console.log('Starting Update');
 
 // Pull the records in the Manifest and CSV file tables.
@@ -13,7 +13,7 @@ let manifest_records = await manifest_table.selectRecordsAsync();
 let csv_table = base.getTable('CSV file');
 let csv_records = await csv_table.selectRecordsAsync();
 
-// Validate unique csv values 
+// Validate unique csv values
 let ids_in_csv = csv_records.records.map(a => a.name.trim());
 if (new Set(ids_in_csv).size !== ids_in_csv.length){
     throw new Error('Duplicate detected in CSV table. Please fix this error and run the script again.');
@@ -31,16 +31,16 @@ for (let updated_record of csv_records.records) {
         );
     }
 
-    /* Get the matching record in the main Manifest table 
+    /* Get the matching record in the main Manifest table
     The updateRecord function requires an object of type Record
-    At present a 'getRecord' function is not supported, so this step, 
-    although inefficient, seems to be required.  */ 
+    At present a 'getRecord' function is not supported, so this step,
+    although inefficient, seems to be required.  */
 
     var matched_record = manifest_records.records.filter((obj) => {
         return obj.getCellValue('Sample ID') === curr_sample;
     });
 
-    // Check for duplicate record found in manifest table 
+    // Check for duplicate record found in manifest table
     if (matched_record.length > 1) {
         throw new Error(
         curr_sample +
@@ -49,7 +49,7 @@ for (let updated_record of csv_records.records) {
     }
 
     let manifest_row = matched_record[0];
-    
+
     // Check row exists in original manifest
     if (manifest_row === undefined) {
         throw new Error(
@@ -58,7 +58,7 @@ for (let updated_record of csv_records.records) {
         );
     }
 
-    // Pull values to transfer 
+    // Pull values to transfer
     let fluidX_tube = updated_record.getCellValue('KCCG FluidX tube ID1');
     let concentration = updated_record.getCellValue(
         'FD tube conc after robot dilution IQC (ng/ul) '
