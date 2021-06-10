@@ -71,7 +71,7 @@ for (let updated_record of csv_records.records) {
 
 
     // Update Record
-    await manifest_table.updateRecordAsync(manifest_row{
+    await manifest_table.updateRecordAsync(manifest_row,{
         'KCCG FluidX tube ID': fluidX_tube,
         'Concentration (ng/ul)*': concentration,
         'Volume (ul)*': volume,
